@@ -1,13 +1,13 @@
 const usersOnline = new Map();
 
-export const userJoinRoom = (socket, metadata, roomId) => {
+export const userJoinRoom = (socket, userdata, roomId) => {
   const userId = socket.userId;
   const socketId = socket.id;
 
   // Khởi tạo hoặc cập nhật kết nối
   if (!usersOnline.has(userId)) {
     usersOnline.set(userId, {
-      metadata: metadata,
+      userdata: userdata,
       rooms: new Set(),
       socketIds: new Set(),
     });
@@ -18,14 +18,14 @@ export const userJoinRoom = (socket, metadata, roomId) => {
   userEntry.socketIds.add(socketId);
   userEntry.rooms.add(roomId);
 
-  return userEntry.metadata; // Trả về metadata đã được chuẩn hóa
+  return userEntry.userdata; // Trả về userdata đã được chuẩn hóa
 };
 
 export const getRoomViewers = (roomId, excludeUserId) => {
   const viewers = [];
   for (const [userId, entry] of usersOnline.entries()) {
     if (userId !== excludeUserId && entry.rooms.has(roomId)) {
-      viewers.push({ userId: userId, ...entry.metadata });
+      viewers.push({ userId: userId, ...entry.userdata });
     }
   }
   return viewers;
